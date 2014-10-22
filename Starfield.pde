@@ -1,4 +1,5 @@
 Particle[] stars = new Particle[50];
+JumboParticle jp = new JumboParticle(8);
 void setup()
 {
 	background(0);
@@ -19,6 +20,9 @@ void draw()
 		stars[i].move();
 		stars[i].show();
 	}
+	jp.move();
+	jp.reColor();
+	jp.show();
 	stars[0].show();
 }
 
@@ -28,12 +32,14 @@ void mousePressed()
 	for (int i = 1; i < stars.length; i++) {
 		((NormalParticle)(stars[i])).setSpawn(stars[0].getX(), stars[0].getY());
 	}
+	jp.setSpawn(stars[0].getX(), stars[0].getY());
 }
 
 class NormalParticle implements Particle
 {
 	private double m_X, m_Y, m_Speed, m_Angle, m_SpawnX, m_SpawnY;
-	color pC;
+	public int m_Size;
+	public color pC;
 
 	NormalParticle(double nsX, double nsY)
 	{
@@ -44,6 +50,18 @@ class NormalParticle implements Particle
 		m_SpawnY = nsY;
 		m_Speed = Math.random()*7+3;
 		m_Angle = Math.toRadians(Math.random()*360);
+		m_Size = 4;
+	}
+	NormalParticle()
+	{
+		pC = color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255));
+		m_SpawnX = 150;
+		m_SpawnY = 150;
+		m_X = m_SpawnX;
+		m_Y = m_SpawnY;
+		m_Speed = Math.random()*7+3;
+		m_Angle = Math.toRadians(Math.random()*360);
+		m_Size = 4;
 	}
 
 	void move()
@@ -61,7 +79,7 @@ class NormalParticle implements Particle
 	void show()
 	{
 		fill(pC);
-		ellipse((float)m_X, (float)m_Y, 4, 4);
+		ellipse((float)m_X, (float)m_Y, m_Size, m_Size);
 	}
 
 	void setSpawn(double nX, double nY)
@@ -72,6 +90,24 @@ class NormalParticle implements Particle
 
 	double getX(){return m_X;}
 	double getY(){return m_Y;}
+}
+
+class JumboParticle extends NormalParticle
+{
+	JumboParticle()
+	{
+		super();
+		m_Size = 10;
+	}
+	JumboParticle(int nSize)
+	{
+		super();
+		m_Size = nSize;
+	}
+	void reColor()
+	{
+		pC = color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255));
+	}
 }
 
 interface Particle
